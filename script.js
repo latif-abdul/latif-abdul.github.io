@@ -1,6 +1,7 @@
 // Configuration
 const GITHUB_USERNAME = 'latif-abdul';
 const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos`;
+const PORTFOLIO_REPO_NAME = `${GITHUB_USERNAME}.github.io`;
 
 // Language colors mapping (common languages)
 const languageColors = {
@@ -38,6 +39,13 @@ const languageFilter = document.getElementById('languageFilter');
 const loading = document.getElementById('loading');
 const noResults = document.getElementById('noResults');
 
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Fetch repositories from GitHub API
 async function fetchRepositories() {
     try {
@@ -48,6 +56,9 @@ async function fetchRepositories() {
         const response = await fetch(`${GITHUB_API_URL}?per_page=100&sort=updated`);
         
         if (!response.ok) {
+            if (response.status === 403) {
+                throw new Error('Rate limit exceeded. Please try again later.');
+            }
             throw new Error('Failed to fetch repositories');
         }
 
@@ -55,7 +66,7 @@ async function fetchRepositories() {
         
         // Filter out the portfolio repo itself and sort by update date
         allProjects = repos
-            .filter(repo => repo.name !== 'latif-abdul.github.io')
+            .filter(repo => repo.name !== PORTFOLIO_REPO_NAME)
             .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         
         filteredProjects = [...allProjects];
@@ -67,9 +78,9 @@ async function fetchRepositories() {
         console.error('Error fetching repositories:', error);
         loading.style.display = 'none';
         projectsGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ef4444;">
-                <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                <p>Failed to load projects. Please try again later.</p>
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>${error.message || 'Failed to load projects. Please try again later.'}</p>
             </div>
         `;
     }
@@ -115,25 +126,30 @@ function createProjectCard(repo) {
         month: 'short',
         day: 'numeric'
     });
+    
+    // Escape user-generated content
+    const escapedName = escapeHtml(repo.name);
+    const escapedDescription = escapeHtml(description);
+    const escapedLanguage = repo.language ? escapeHtml(repo.language) : '';
 
     return `
-        <div class="project-card" data-language="${repo.language || ''}" data-name="${repo.name.toLowerCase()}">
+        <div class="project-card" data-language="${escapedLanguage}" data-name="${repo.name.toLowerCase()}">
             <div class="project-header">
                 <i class="fas fa-folder-open project-icon"></i>
                 <div class="project-title">
                     <a href="${repo.html_url}" target="_blank" rel="noopener" class="project-name">
-                        ${repo.name}
+                        ${escapedName}
                     </a>
                 </div>
             </div>
             
-            <p class="project-description">${description}</p>
+            <p class="project-description">${escapedDescription}</p>
             
             <div class="project-meta">
                 ${repo.language ? `
                     <span class="meta-item language-badge">
                         <span class="language-dot" style="background-color: ${languageColor};"></span>
-                        <span>${repo.language}</span>
+                        <span>${escapedLanguage}</span>
                     </span>
                 ` : ''}
                 

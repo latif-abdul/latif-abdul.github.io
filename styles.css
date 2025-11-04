@@ -303,6 +303,20 @@ body {
     background-color: var(--secondary-color);
 }
 
+/* Error State */
+.error-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: #ef4444;
+}
+
+.error-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
 /* No Results */
 .no-results {
     text-align: center;
