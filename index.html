@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio of latif-abdul - Software Developer">
+    <title>Latif Abdul - Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="name">Latif Abdul</h1>
+                <p class="tagline">Software Developer</p>
+                <div class="social-links">
+                    <a href="https://github.com/latif-abdul" target="_blank" rel="noopener" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Projects Section -->
+            <section class="projects-section">
+                <div class="section-header">
+                    <h2 class="section-title">My Projects</h2>
+                    <p class="section-description">A collection of my work and contributions</p>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search projects...">
+                    </div>
+                    <div class="filter-box">
+                        <label for="languageFilter">Filter by language:</label>
+                        <select id="languageFilter">
+                            <option value="">All Languages</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading projects...</p>
+                </div>
+
+                <!-- Projects Grid -->
+                <div id="projectsGrid" class="projects-grid">
+                    <!-- Projects will be dynamically inserted here -->
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noResults" class="no-results" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No projects found matching your criteria.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Latif Abdul. All rights reserved.</p>
+            <p class="footer-note">Built with <i class="fas fa-heart"></i> using GitHub API</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
