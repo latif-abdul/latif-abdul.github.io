@@ -46,6 +46,11 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Helper function to validate hex color
+function isValidHexColor(color) {
+    return /^#[0-9A-Fa-f]{6}$/.test(color);
+}
+
 // Fetch repositories from GitHub API
 async function fetchRepositories() {
     try {
@@ -77,10 +82,11 @@ async function fetchRepositories() {
     } catch (error) {
         console.error('Error fetching repositories:', error);
         loading.style.display = 'none';
+        const errorMsg = escapeHtml(error.message || 'Failed to load projects. Please try again later.');
         projectsGrid.innerHTML = `
             <div class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
-                <p>${error.message || 'Failed to load projects. Please try again later.'}</p>
+                <p>${errorMsg}</p>
             </div>
         `;
     }
@@ -118,6 +124,8 @@ function displayProjects() {
 // Create a project card HTML
 function createProjectCard(repo) {
     const languageColor = languageColors[repo.language] || '#6b7280';
+    // Validate color to prevent CSS injection
+    const safeColor = isValidHexColor(languageColor) ? languageColor : '#6b7280';
     const description = repo.description || 'No description available';
     const stars = repo.stargazers_count || 0;
     const forks = repo.forks_count || 0;
@@ -131,9 +139,10 @@ function createProjectCard(repo) {
     const escapedName = escapeHtml(repo.name);
     const escapedDescription = escapeHtml(description);
     const escapedLanguage = repo.language ? escapeHtml(repo.language) : '';
+    const escapedNameLower = escapeHtml(repo.name.toLowerCase());
 
     return `
-        <div class="project-card" data-language="${escapedLanguage}" data-name="${repo.name.toLowerCase()}">
+        <div class="project-card" data-language="${escapedLanguage}" data-name="${escapedNameLower}">
             <div class="project-header">
                 <i class="fas fa-folder-open project-icon"></i>
                 <div class="project-title">
@@ -148,7 +157,7 @@ function createProjectCard(repo) {
             <div class="project-meta">
                 ${repo.language ? `
                     <span class="meta-item language-badge">
-                        <span class="language-dot" style="background-color: ${languageColor};"></span>
+                        <span class="language-dot" style="background-color: ${safeColor};"></span>
                         <span>${escapedLanguage}</span>
                     </span>
                 ` : ''}
