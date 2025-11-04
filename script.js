@@ -41,6 +41,7 @@ const noResults = document.getElementById('noResults');
 
 // Helper function to escape HTML
 function escapeHtml(text) {
+    if (text == null) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -49,6 +50,16 @@ function escapeHtml(text) {
 // Helper function to validate hex color
 function isValidHexColor(color) {
     return /^#[0-9A-Fa-f]{6}$/.test(color);
+}
+
+// Helper function to validate GitHub URLs
+function isValidGitHubUrl(url) {
+    try {
+        const urlObj = new URL(url);
+        return urlObj.hostname === 'github.com' && urlObj.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
 }
 
 // Fetch repositories from GitHub API
@@ -140,13 +151,16 @@ function createProjectCard(repo) {
     const escapedDescription = escapeHtml(description);
     const escapedLanguage = repo.language ? escapeHtml(repo.language) : '';
     const escapedNameLower = escapeHtml(repo.name.toLowerCase());
+    
+    // Validate GitHub URL
+    const safeUrl = isValidGitHubUrl(repo.html_url) ? repo.html_url : '#';
 
     return `
         <div class="project-card" data-language="${escapedLanguage}" data-name="${escapedNameLower}">
             <div class="project-header">
                 <i class="fas fa-folder-open project-icon"></i>
                 <div class="project-title">
-                    <a href="${repo.html_url}" target="_blank" rel="noopener" class="project-name">
+                    <a href="${safeUrl}" target="_blank" rel="noopener" class="project-name">
                         ${escapedName}
                     </a>
                 </div>
@@ -183,7 +197,7 @@ function createProjectCard(repo) {
             </div>
             
             <div class="project-footer">
-                <a href="${repo.html_url}" target="_blank" rel="noopener" class="project-link">
+                <a href="${safeUrl}" target="_blank" rel="noopener" class="project-link">
                     View Project <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
